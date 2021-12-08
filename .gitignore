@@ -25,6 +25,7 @@ Build.bat
 inc/
 
 # ExtUtils::MakeMaker
+/.svn
 /blib/
 /_eumm/
 /*.gz

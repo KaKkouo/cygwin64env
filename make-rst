@@ -1,0 +1,58 @@
+#!/usr/bin/bash
+
+# usage:
+#	make-rst mode src_dir
+# convert
+# 	.rstx -> .rst
+
+readonly DATE_STR=`date '+%m%d-%y'`
+convert_file()
+{
+	if [ ${1} -nt ${2} ]
+	then
+		echo "* generate: ${2}"
+		sed -e 's/\.\$Rev: \([0-9][0-9]*\) \$\]/.\1]/' ${1} | \
+		sed -e 's/{{MMDD-YY}}/'${DATE_STR}'/' > ${2}
+	fi
+}
+
+create_rst()
+{
+	convert_file $1/conf.pyx $1/conf.py
+
+	for src in `find $1 -name \*.rstx`
+	do
+		convert_file $src ${src%.rstx}.rst
+	done
+}
+
+delete_rst()
+{
+	find $1 -name \*.rst -exec rm -f {} \;
+	return 0
+}
+
+main()
+{
+	if [ "$1" = "" ]
+	then
+		echo "no mode"; return 127
+	fi
+
+	if [ ! -d "$2" ]
+	then
+		echo "not found: $2"; return 126
+	fi
+
+	if [ "$1" = "clean" ]
+	then
+		delete_rst $2
+	else
+		create_rst $2
+	fi
+
+	return 0
+}
+
+main $1 $2 $3
+exit $?
