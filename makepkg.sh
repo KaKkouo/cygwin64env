@@ -3,4 +3,6 @@
 python setup.py develop
 python setup.py sdist
 
-echo "exec: twine check [pkg]"
+pypkg=`ls -t dist/ | head -1`
+
+twine check dist/${pypkg}
